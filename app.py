@@ -7,6 +7,7 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
+
 def open_browser_with_cookies(url, cookies):
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=False)  # Launch the browser
@@ -21,11 +22,16 @@ def open_browser_with_cookies(url, cookies):
         page = context.new_page()
         page.goto(url)
 
-        # Keep the browser open
-        print("Browser is open. Press CTRL+C to close.")
-        input("Press Enter to close the browser...\n")  # Keeps the script running until Enter is pressed
+        # Keep the browser open by running an event loop
+        try:
+            while True:
+                # Keep the server running or use other mechanism to keep it open
+                input("Press Enter to close the browser...\n")  # Wait for user input
+        except KeyboardInterrupt:
+            print("Browser closed.")
+        finally:
+            browser.close()  # Ensure the browser closes
 
-        browser.close()  # Close the browser after user input
 
 @app.route('/open-browser', methods=['POST'])
 def open_browser():
