@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify , render_template
+from flask import Flask, request, jsonify, render_template
 from playwright.sync_api import sync_playwright
 
 app = Flask(__name__)
@@ -6,7 +6,6 @@ app = Flask(__name__)
 @app.route('/')
 def index():
     return render_template('index.html')
-
 
 def open_browser_with_cookies(url, cookies):
     with sync_playwright() as p:
@@ -28,16 +27,14 @@ def open_browser_with_cookies(url, cookies):
 
         browser.close()  # Close the browser after user input
 
+@app.route('/open-browser', methods=['POST'])
+def open_browser():
+    data = request.json
+    url = data.get('url', 'https://www.example.com/')
+    cookies = data.get('cookies', [])
+    open_browser_with_cookies(url, cookies)
 
-
-# @app.route('/open-browser', methods=['POST'])
-# def open_browser():
-#     data = request.json
-#     url = data.get('url', 'https://www.youtube.com/')
-#     cookies = data.get('cookies', [])
-#     open_browser_with_cookies(url, cookies)
-
-#     return jsonify({"message": "Browser opened with cookies!"})
+    return jsonify({"message": "Browser opened with cookies!"})
 
 if __name__ == '__main__':
     app.run(debug=True)
