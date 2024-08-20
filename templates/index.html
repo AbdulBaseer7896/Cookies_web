@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Open Browser with Cookies</title>
+</head>
+<body>
+    <h1>Open Browser with Cookies</h1>
+    <form id="browserForm">
+        <label for="url">Website URL:</label>
+        <input type="text" id="url" name="url" value="https://example.com"><br><br>
+        <label for="cookies">Cookies (JSON format):</label>
+        <textarea id="cookies" name="cookies"></textarea><br><br>
+        <button type="submit">Open Browser</button>
+    </form>
+
+    <script>
+        document.getElementById('browserForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const url = document.getElementById('url').value;
+            const cookies = JSON.parse(document.getElementById('cookies').value);
+
+            const response = await fetch('/open-browser', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ url, cookies }),
+            });
+
+            const result = await response.json();
+            alert(result.message);
+        });
+    </script>
+</body>
+</html>
